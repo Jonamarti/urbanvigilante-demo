@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="es"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Vigilante Urbano · Exploración piloto</title>  <script type="module" crossorigin src="/urbanvigilante-demo/assets/explore-Dt7rMNbO.js"></script>
+  <link rel="modulepreload" crossorigin href="/urbanvigilante-demo/assets/modulepreload-polyfill-B5Qt9EMX.js">
+  <link rel="modulepreload" crossorigin href="/urbanvigilante-demo/assets/atlas-facing-rjqqDYcM.js">
+  <link rel="modulepreload" crossorigin href="/urbanvigilante-demo/assets/exploration-model-qLWSUBjp.js">
+  <link rel="modulepreload" crossorigin href="/urbanvigilante-demo/assets/journal-CI_oPuaq.js">
+  <link rel="stylesheet" crossorigin href="/urbanvigilante-demo/assets/explore-j4G20rTR.css">
+</head>
+<body><main id="exploration-root" data-input-mode="keyboard"><header class="explore-toolbar"><div><strong>VIGILANTE URBANO</strong> · Exploración 2.5D <span class="pilot">PILOTO</span></div><a href="./index.html">Volver a casa</a></header>
+<section class="explore-stage"><canvas id="explore-canvas" width="1280" height="720" tabindex="0" aria-label="Escena de exploración con personajes y objetos seleccionables"></canvas>
+<button type="button" id="npc-hotspot" class="scene-hotspot scene-hotspot--npc" aria-label="Acciones del camarero" title="Interactuar con el camarero"><span class="scene-hotspot-glyph" aria-hidden="true">⋯</span></button>
+<button type="button" id="bench-hotspot" class="scene-hotspot scene-hotspot--bench" aria-label="Acciones del banco" title="Interactuar con el banco"><span class="scene-hotspot-glyph" aria-hidden="true">▤</span></button>
+<div class="explore-hud top"><b>Salud</b> <meter id="health-meter" min="0" max="100" value="100"></meter> <b>Energía</b> <meter id="energy-meter" min="0" max="100" value="100"></meter></div>
+<div class="explore-hud bottom"><span class="control-hint control-hint--keyboard">Acércate al camarero y pulsa E para hablar o haz clic sobre él.</span><span class="control-hint control-hint--touch">Toca al camarero o al banco para elegir qué hacer. Toca el suelo para caminar.</span><span id="explore-status" role="status">Listo para explorar</span><output id="explore-telemetry" aria-label="Telemetría de exploración">Dirección: S · Posición: 670,590 · Estado: idle</output></div></section>
+<div id="touch-explore-feedback" class="touch-explore-feedback" aria-label="Instrucciones y estado de exploración">
+  <span>Toca al camarero o al banco para elegir qué hacer; toca el suelo para caminar.</span>
+  <output id="touch-explore-status" role="status">Listo para explorar</output>
+</div>
+<section id="observation-panel" class="observation-panel" aria-label="Vigilancia activa" hidden>
+  <div class="observation-panel-info">
+    <strong>Observando al camarero</strong>
+    <span id="observation-visibility" role="status">Comprobando línea de visión…</span>
+    <span id="observation-progress">Tiempo visible: 0 s</span>
+    <output id="photo-feedback" role="status" aria-live="polite"></output>
+  </div>
+  <div class="watch-actions">
+    <button type="button" id="photo-capture" aria-label="Fotografiar al camarero en el escenario 2D">Fotografiar</button>
+    <button type="button" id="observation-stop">Detener observación</button>
+  </div>
+</section>
+<section id="observation-log" class="observation-log" aria-label="Registro de observación" hidden>
+  <strong>Registro de observación · piloto</strong>
+  <ol id="observation-facts" role="log" aria-label="Hechos observados" aria-live="polite"></ol>
+</section>
+<details id="pilot-notebook" class="observation-log" aria-label="Cuaderno de evidencias del piloto">
+  <summary>Cuaderno de investigación · <span id="notebook-count">0 pruebas</span></summary>
+  <p>Hechos vistos y fotografías 2D de prueba. Ninguna entrada confirma delitos, intenciones o rutinas futuras. Se conserva en este navegador.</p>
+  <ol id="notebook-entries" aria-label="Evidencias obtenidas" aria-live="polite"></ol>
+  <button type="button" id="notebook-export">Exportar cuaderno (JSON)</button>
+</details>
+<section class="explore-controls"><button type="button" id="scene-mode" aria-pressed="false" data-mode="clean">Ver boceto de referencia</button><button type="button" id="action-talk"><span>Hablar</span><span class="keyboard-shortcut"> (E)</span></button><button type="button" id="action-sit"><span>Sentarse</span><span class="keyboard-shortcut"> (Q)</span></button><button type="button" id="action-guard"><span>Guardia</span><span class="keyboard-shortcut"> (F)</span></button><button type="button" id="action-strike"><span>Golpear</span><span class="keyboard-shortcut"> (J)</span></button><button type="button" id="action-reset"><span>Reiniciar</span><span class="keyboard-shortcut"> (R)</span></button></section>
+<section class="touch-pad" aria-label="Controles táctiles"><button type="button" data-move="0,-1">▲</button><button type="button" data-move="-1,0">◀</button><button type="button" data-move="0,1">▼</button><button type="button" data-move="1,0">▶</button></section><div id="interaction-backdrop" class="interaction-backdrop" hidden></div><section id="interaction-menu" class="interaction-menu" role="dialog" aria-modal="true" aria-labelledby="interaction-menu-title" aria-describedby="interaction-menu-help" hidden><header class="interaction-menu-heading"><h2 id="interaction-menu-title">Interactuar</h2><p id="interaction-menu-help">Elige una acción</p></header><div id="interaction-menu-wheel" class="interaction-menu-wheel"><button type="button" id="interaction-menu-close" class="interaction-menu-close">Cerrar</button></div></section><footer>El escenario limpio es un fondo vectorial original de PRUEBA: no contiene personajes ni HUD incrustado. El botón alterna al boceto artístico anterior para compararlo; ese boceto no es jugable como fondo definitivo. Animaciones y oclusiones todavía provisionales.</footer></main><style id="vu-build-badge-css">#vu-build-badge{position:fixed;right:max(10px,env(safe-area-inset-right));bottom:max(8px,env(safe-area-inset-bottom));z-index:2147483646;max-width:calc(100vw - 20px);padding:4px 8px;border-radius:5px;background:rgba(13,19,26,.72);color:#d3dce7;font:500 11px/1.3 ui-monospace,SFMono-Regular,Consolas,monospace;letter-spacing:.02em;text-align:right;pointer-events:none;user-select:text;box-sizing:border-box}@media(max-width:480px){#vu-build-badge{font-size:10px;padding:3px 6px}}</style><div id="vu-build-badge" aria-label="Versión del juego: v0.1.0-alpha.48 · 41f6df7">v0.1.0-alpha.48 · 41f6df7</div></body></html>

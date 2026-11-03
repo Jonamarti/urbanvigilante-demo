@@ -1,0 +1,119 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="theme-color" content="#292c30" />
+    <title>Vigilante Urbano · Corcho de investigación</title>
+    <script type="module" crossorigin src="/urbanvigilante-demo/assets/main-PhUsrQpP.js"></script>
+    <link rel="modulepreload" crossorigin href="/urbanvigilante-demo/assets/modulepreload-polyfill-B5Qt9EMX.js">
+    <link rel="modulepreload" crossorigin href="/urbanvigilante-demo/assets/journal-CI_oPuaq.js">
+    <link rel="modulepreload" crossorigin href="/urbanvigilante-demo/assets/exploration-model-qLWSUBjp.js">
+    <link rel="modulepreload" crossorigin href="/urbanvigilante-demo/assets/play-model-_MvFxcvW.js">
+    <link rel="modulepreload" crossorigin href="/urbanvigilante-demo/assets/board-evidence-DsDp1WtG.js">
+    <link rel="stylesheet" crossorigin href="/urbanvigilante-demo/assets/board-evidence-6Fj8Mz1j.css">
+    <link rel="stylesheet" crossorigin href="/urbanvigilante-demo/assets/main-Ds1dZfG0.css">
+  </head>
+  <body>
+    <div class="app" inert>
+      <header class="topbar">
+        <div class="heading">
+          <div class="eyebrow">VIGILANTE URBANO · PROTOTIPO</div>
+          <a href="./explore.html" id="open-exploration" style="color:#f4c78d;font-size:13px;font-weight:700">▶ Probar exploración</a>
+          <a href="./inicio.html" id="open-start" style="color:#f4c78d;font-size:13px;font-weight:700;margin-left:12px">▶ Nueva partida</a>
+          <button id="return-room" type="button">← Volver a la habitación</button>
+          <h1 tabindex="-1">Corcho de investigación</h1>
+        </div>
+        <div class="controls" aria-label="Herramientas del corcho">
+          <label class="compact" for="card-kind">Tipo
+            <select id="card-kind">
+              <option value="person">Persona</option>
+              <option value="organization">Organización</option>
+              <option value="place">Lugar</option>
+              <option value="evidence">Prueba</option>
+              <option value="event">Suceso</option>
+              <option value="hypothesis">Hipótesis</option>
+              <option value="unknown">Desconocido</option>
+              <option value="note">Nota libre</option>
+            </select>
+          </label>
+          <label class="compact" for="new-title">Título
+            <input id="new-title" placeholder="Nueva tarjeta..." maxlength="120" />
+          </label>
+          <button id="add-card" class="primary" type="button">+ Añadir</button>
+          <button id="undo" type="button" title="Deshacer (Ctrl+Z)">Deshacer</button>
+          <button id="redo" type="button" title="Rehacer (Ctrl+Mayús+Z)">Rehacer</button>
+          <button id="save" type="button">Guardar</button>
+          <button id="load" type="button">Cargar</button>
+          <button id="zoom-out" type="button" aria-label="Alejar">−</button>
+          <button id="zoom-in" type="button" aria-label="Acercar">+</button>
+          <button id="reset-view" type="button">Encuadrar</button>
+          <label class="archive-toggle" for="show-archived"><input id="show-archived" type="checkbox" /> Archivadas</label>
+        </div>
+      </header>
+      <main class="workspace">
+        <div class="workspace-head">
+          <span id="board-name">Red del barrio</span>
+          <span id="zoom-readout">100 %</span>
+          <span id="hint">Arrastra una tarjeta o el fondo; clic derecho o «⋯» para acciones.</span>
+        </div>
+        <div id="board-stage" class="board-stage" aria-label="Superficie del corcho" tabindex="0">
+          <div id="world" class="world" aria-label="Tablero">
+            <svg id="threads" class="threads" xmlns="http://www.w3.org/2000/svg" aria-label="Hilos entre tarjetas"></svg>
+            <div id="cards" class="cards-layer"></div>
+          </div>
+          <div id="empty" class="empty" hidden>No hay tarjetas visibles. Añade una arriba o muestra las archivadas.</div>
+        </div>
+        <div class="workspace-foot">
+          <span id="feedback" role="status" aria-live="polite">Todo lo que conectes aquí es tu interpretación, no una conclusión del juego.</span>
+          <span>Rueda: zoom · Táctil: pellizcar para ampliar</span>
+        </div>
+      </main>
+    </div>
+
+    <div id="context-menu" class="context-menu" role="menu" hidden>
+      <div id="menu-heading" class="menu-heading"></div>
+      <button type="button" data-menu-action="edit" role="menuitem">Editar</button>
+      <button type="button" data-menu-action="connect" role="menuitem">Crear hilo desde aquí</button>
+      <button type="button" data-menu-action="archive" role="menuitem">Archivar</button>
+      <button type="button" data-menu-action="delete" class="danger" role="menuitem">Borrar</button>
+    </div>
+
+    <dialog id="card-dialog" aria-labelledby="card-dialog-heading">
+      <form id="card-form">
+        <h2 id="card-dialog-heading">Editar tarjeta</h2>
+        <label for="edit-title">Título<input id="edit-title" maxlength="120" required /></label>
+        <label for="edit-note">Anotaciones<textarea id="edit-note" rows="4"></textarea></label>
+        <div class="dialog-actions">
+          <button id="cancel-card" type="button">Cancelar</button>
+          <button class="primary" type="submit">Guardar cambios</button>
+        </div>
+      </form>
+    </dialog>
+
+    <dialog id="link-dialog" aria-labelledby="link-dialog-heading">
+      <form id="link-form">
+        <h2 id="link-dialog-heading">Anotar relación</h2>
+        <p id="link-between" class="subtle"></p>
+        <label for="link-label">Mi interpretación<input id="link-label" placeholder="p. ej. colaboran, quizá se conocen" maxlength="160" /></label>
+        <label for="link-color">Color del hilo
+          <select id="link-color">
+            <option value="gray">Gris</option><option value="yellow">Amarillo</option>
+            <option value="blue">Azul</option><option value="green">Verde</option>
+            <option value="red">Rojo</option><option value="purple">Morado</option>
+          </select>
+        </label>
+        <label for="link-direction">Sentido
+          <select id="link-direction"><option value="none">Sin dirección</option><option value="forward">De origen a destino</option></select>
+        </label>
+        <label for="link-pattern">Trazo
+          <select id="link-pattern"><option value="solid">Continuo</option><option value="dashed">Discontinuo</option><option value="dotted">Punteado</option></select>
+        </label>
+        <div class="dialog-actions">
+          <button id="cancel-link" type="button">Cancelar</button>
+          <button class="primary" type="submit">Guardar hilo</button>
+        </div>
+      </form>
+    </dialog>
+  <style id="vu-build-badge-css">#vu-build-badge{position:fixed;right:max(10px,env(safe-area-inset-right));bottom:max(8px,env(safe-area-inset-bottom));z-index:2147483646;max-width:calc(100vw - 20px);padding:4px 8px;border-radius:5px;background:rgba(13,19,26,.72);color:#d3dce7;font:500 11px/1.3 ui-monospace,SFMono-Regular,Consolas,monospace;letter-spacing:.02em;text-align:right;pointer-events:none;user-select:text;box-sizing:border-box}@media(max-width:480px){#vu-build-badge{font-size:10px;padding:3px 6px}}</style><div id="vu-build-badge" aria-label="Versión del juego: v0.1.0-alpha.48 · 41f6df7">v0.1.0-alpha.48 · 41f6df7</div></body>
+</html>
