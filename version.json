@@ -1,0 +1,20 @@
+{
+  "schema": "vu-demo-1",
+  "version": "0.1.0-alpha.51",
+  "full_version": "0.1.0-alpha.51+ga2e2855",
+  "tag": "v0.1.0-alpha.51",
+  "channel": "alpha",
+  "commit": "a2e2855ce46f871a696a46240e5c4bf03fa5ff97",
+  "short_commit": "a2e2855",
+  "worktree_modified": false,
+  "compiled_at": "2026-11-03T22:30:56.828Z",
+  "start": "inicio.html",
+  "routes": [
+    "inicio.html",
+    "jugar.html",
+    "index.html",
+    "explore.html",
+    "arte.html",
+    "retratos.html"
+  ]
+}
